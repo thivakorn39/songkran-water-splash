@@ -2,78 +2,116 @@
 <html lang="th">
 
 <head>
-    <meta charset="UTF-8">
-    <title>กำแพงสาดน้ำ</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            background: #fff3e0;
-            padding: 2rem;
-        }
+  <meta charset="UTF-8">
+  <title>กำแพงสาดน้ำ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fff3e0;
+      text-align: center;
+      margin: 0;
+      padding: 2rem;
+    }
 
-        .message {
-            background: #81d4fa;
-            padding: 1rem;
-            margin: 0.5rem 0;
-            border-radius: 10px;
-            font-size: 1.2rem;
-        }
-    </style>
+    .container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .splash-img {
+      width: 400px;
+    }
+
+    .message {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #0077cc;
+      font-size: 1.4rem;
+      font-weight: bold;
+      white-space: nowrap;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(-50%, -50%) translateY(0px);
+      }
+
+      50% {
+        transform: translate(-50%, -50%) translateY(-15px);
+      }
+
+      100% {
+        transform: translate(-50%, -50%) translateY(0px);
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <h1>🧱 กำแพงคำอวยพรสงกรานต์ 🧱</h1>
-    <div id="wall"></div>
+  <h1>💧 กำแพงคำอวยพรสงกรานต์ 💧</h1>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, onChildAdded, remove, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+  <div id="wall"></div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBMH5oWEqrsPvIHfe6UVeszseV0-QaxtGw",
-            authDomain: "songkran-water-splash.firebaseapp.com",
-            databaseURL: "https://songkran-water-splash-default-rtdb.firebaseio.com", // ✅ เพิ่มแล้ว
-            projectId: "songkran-water-splash",
-            storageBucket: "songkran-water-splash.appspot.com",
-            messagingSenderId: "145856517287",
-            appId: "1:145856517287:web:63c638840573c3ca79b782",
-            measurementId: "G-P4Y1K4Q00B"
-        };
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getDatabase, ref, onChildAdded, remove, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const wall = document.getElementById("wall");
+    const firebaseConfig = {
+      apiKey: "AIzaSyBMH5oWEqrsPvIHfe6UVeszseV0-QaxtGw",
+      authDomain: "songkran-water-splash.firebaseapp.com",
+      projectId: "songkran-water-splash",
+      storageBucket: "songkran-water-splash.appspot.com",
+      messagingSenderId: "145856517287",
+      appId: "1:145856517287:web:63c638840573c3ca79b782"
+    };
 
-        const EXPIRY_MS = 3 * 60 * 60 * 1000; // 3 ชั่วโมง
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const wall = document.getElementById("wall");
 
-        onChildAdded(ref(db, "messages"), (data) => {
-            const msg = data.val();
-            const id = data.key;
+    const EXPIRY_MS = 3 * 60 * 60 * 1000; // 3 ชั่วโมง
 
-            // ลบข้อความที่หมดอายุ
-            if (Date.now() - msg.timestamp > EXPIRY_MS) {
-                remove(ref(db, "messages/" + id));
-                return;
-            }
+    onChildAdded(ref(db, "messages"), (data) => {
+      const msg = data.val();
+      const id = data.key;
 
-            const div = document.createElement("div");
-            div.className = "message";
-            div.textContent = msg.text;
-            wall.prepend(div);
-        });
+      // ถ้าข้อความเก่าเกิน 3 ชั่วโมง ให้ลบทิ้ง
+      if (Date.now() - msg.timestamp > EXPIRY_MS) {
+        remove(ref(db, "messages/" + id));
+        return;
+      }
 
-        // ลบข้อความที่หมดอายุทุกๆ 1 นาที
-        setInterval(async () => {
-            const snapshot = await get(ref(db, "messages"));
-            const now = Date.now();
-            snapshot.forEach(child => {
-                const data = child.val();
-                if (now - data.timestamp > EXPIRY_MS) {
-                    remove(ref(db, "messages/" + child.key));
-                }
-            });
-        }, 60 * 1000);
-    </script>
+      const container = document.createElement("div");
+      container.className = "container";
+
+      const image = document.createElement("img");
+      image.src = "./—Pngtree—songkran festival celebration squirrel battle_7417708.png";
+      image.className = "splash-img";
+
+      const text = document.createElement("div");
+      text.className = "message";
+      text.textContent = msg.text;
+
+      container.appendChild(image);
+      container.appendChild(text);
+      wall.prepend(container);
+    });
+
+    // ลบข้อความที่หมดอายุทุกๆ 1 นาที
+    setInterval(async () => {
+      const snapshot = await get(ref(db, "messages"));
+      const now = Date.now();
+      snapshot.forEach(child => {
+        const data = child.val();
+        if (now - data.timestamp > EXPIRY_MS) {
+          remove(ref(db, "messages/" + child.key));
+        }
+      });
+    }, 60 * 1000);
+  </script>
 </body>
 
 </html>
