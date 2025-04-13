@@ -36,8 +36,9 @@
         const firebaseConfig = {
             apiKey: "AIzaSyBMH5oWEqrsPvIHfe6UVeszseV0-QaxtGw",
             authDomain: "songkran-water-splash.firebaseapp.com",
+            databaseURL: "https://songkran-water-splash-default-rtdb.firebaseio.com", // ✅ เพิ่มแล้ว
             projectId: "songkran-water-splash",
-            storageBucket: "songkran-water-splash.firebasestorage.app",
+            storageBucket: "songkran-water-splash.appspot.com",
             messagingSenderId: "145856517287",
             appId: "1:145856517287:web:63c638840573c3ca79b782",
             measurementId: "G-P4Y1K4Q00B"
@@ -46,18 +47,19 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // ใช้ addEventListener แทน onclick HTML
         document.getElementById("sendBtn").addEventListener("click", () => {
-            const msg = document.getElementById("message").value;
-            if (msg.trim() === "") return;
+            const msg = document.getElementById("message").value.trim();
+            if (msg === "") return;
 
             const data = {
                 text: msg,
                 timestamp: Date.now()
             };
-            push(ref(db, "messages"), data);
-            document.getElementById("message").value = "";
-            alert("สาดน้ำเรียบร้อย!");
+
+            push(ref(db, "messages"), data).then(() => {
+                document.getElementById("message").value = "";
+                window.location.href = "wall.html"; // ✅ เปลี่ยนหน้า
+            });
         });
     </script>
 </body>

@@ -32,8 +32,9 @@
         const firebaseConfig = {
             apiKey: "AIzaSyBMH5oWEqrsPvIHfe6UVeszseV0-QaxtGw",
             authDomain: "songkran-water-splash.firebaseapp.com",
+            databaseURL: "https://songkran-water-splash-default-rtdb.firebaseio.com", // ✅ เพิ่มแล้ว
             projectId: "songkran-water-splash",
-            storageBucket: "songkran-water-splash.firebasestorage.app",
+            storageBucket: "songkran-water-splash.appspot.com",
             messagingSenderId: "145856517287",
             appId: "1:145856517287:web:63c638840573c3ca79b782",
             measurementId: "G-P4Y1K4Q00B"
@@ -49,7 +50,7 @@
             const msg = data.val();
             const id = data.key;
 
-            // ถ้าข้อความเก่าเกิน 3 ชั่วโมง ให้ลบทิ้ง
+            // ลบข้อความที่หมดอายุ
             if (Date.now() - msg.timestamp > EXPIRY_MS) {
                 remove(ref(db, "messages/" + id));
                 return;
