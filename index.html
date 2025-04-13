@@ -1,50 +1,65 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-  <meta charset="UTF-8">
-  <title>สาดน้ำออนไลน์</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 5rem; background: #e0f7fa; }
-    input, button { padding: 1rem; font-size: 1.2rem; margin-top: 1rem; width: 80%; max-width: 400px; }
-  </style>
+    <meta charset="UTF-8">
+    <title>สาดน้ำออนไลน์</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 5rem;
+            background: #e0f7fa;
+        }
+
+        input,
+        button {
+            padding: 1rem;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            width: 80%;
+            max-width: 400px;
+        }
+    </style>
 </head>
+
 <body>
-  <h1>💦 ส่งคำอวยพรสงกรานต์ 💦</h1>
-  <input type="text" id="message" placeholder="เขียนข้อความของคุณ...">
-  <br>
-  <button id="sendBtn">สาดน้ำ!</button>
+    <h1>💦 ส่งคำอวยพรสงกรานต์ 💦</h1>
+    <input type="text" id="message" placeholder="เขียนข้อความของคุณ...">
+    <br>
+    <button id="sendBtn">สาดน้ำ!</button>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-    const firebaseConfig = {
-      // ใส่ config ของคุณตรงนี้
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "XXXXXX",
-      appId: "XXXXXX"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMH5oWEqrsPvIHfe6UVeszseV0-QaxtGw",
+            authDomain: "songkran-water-splash.firebaseapp.com",
+            projectId: "songkran-water-splash",
+            storageBucket: "songkran-water-splash.firebasestorage.app",
+            messagingSenderId: "145856517287",
+            appId: "1:145856517287:web:63c638840573c3ca79b782",
+            measurementId: "G-P4Y1K4Q00B"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-    // ใช้ addEventListener แทน onclick HTML
-    document.getElementById("sendBtn").addEventListener("click", () => {
-      const msg = document.getElementById("message").value;
-      if (msg.trim() === "") return;
+        // ใช้ addEventListener แทน onclick HTML
+        document.getElementById("sendBtn").addEventListener("click", () => {
+            const msg = document.getElementById("message").value;
+            if (msg.trim() === "") return;
 
-      const data = {
-        text: msg,
-        timestamp: Date.now()
-      };
-      push(ref(db, "messages"), data);
-      document.getElementById("message").value = "";
-      alert("สาดน้ำเรียบร้อย!");
-    });
-  </script>
+            const data = {
+                text: msg,
+                timestamp: Date.now()
+            };
+            push(ref(db, "messages"), data);
+            document.getElementById("message").value = "";
+            alert("สาดน้ำเรียบร้อย!");
+        });
+    </script>
 </body>
+
 </html>
