@@ -12,8 +12,7 @@
             font-family: sans-serif;
         }
 
-        .floating-message-fade,
-        .floating-message-bounce {
+        .floating-message {
             position: absolute;
             background-image: url('./splash.png');
             background-size: cover;
@@ -27,24 +26,7 @@
             pointer-events: none;
 
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-            background-color: rgba(0, 0, 0, 0.2);
             border-radius: 20px;
-        }
-
-        .floating-message-fade {
-            animation: float linear infinite;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translate(0px, 0px);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translate(var(--dx), var(--dy));
-                opacity: 0;
-            }
         }
     </style>
 </head>
@@ -71,6 +53,8 @@
 
         const EXPIRY_MS = 3 * 60 * 60 * 1000; // 3 ชั่วโมง
 
+        const wall = document.getElementById("wall");
+
         onChildAdded(ref(db, "messages"), (data) => {
             const msg = data.val();
             const id = data.key;
@@ -80,32 +64,7 @@
                 return;
             }
 
-            const div = document.createElement("div");
-            div.className = "floating-message-fade";
-            div.textContent = msg.text;
-
-            // สไตล์สุ่ม
-            div.style.fontSize = `${1 + Math.random()}rem`;
-            div.style.color = `hsl(${Math.random() * 360}, 100%, 85%)`;
-
-            const startX = Math.random() * window.innerWidth;
-            const startY = Math.random() * window.innerHeight;
-            div.style.left = `${startX}px`;
-            div.style.top = `${startY}px`;
-
-            const dx = (Math.random() - 0.5) * 500;
-            const dy = (Math.random() - 0.5) * 500;
-            div.style.setProperty('--dx', `${dx}px`);
-            div.style.setProperty('--dy', `${dy}px`);
-
-            const duration = 10 + Math.random() * 10;
-            div.style.animationDuration = `${duration}s`;
-
-            document.body.appendChild(div);
-
-            setTimeout(() => {
-                div.remove();
-            }, duration * 1000);
+            createFloatingMessage(msg.text);
         });
 
         // ลบข้อความหมดอายุทุก 1 นาที
@@ -120,11 +79,9 @@
             });
         }, 60 * 1000);
 
-        const wall = document.getElementById("wall");
-
         function createFloatingMessage(text) {
             const div = document.createElement("div");
-            div.className = "floating-message-bounce";
+            div.className = "floating-message";
             div.textContent = text;
 
             // สไตล์สุ่ม
@@ -153,9 +110,6 @@
 
             move();
         }
-
-        // ตัวอย่างการเรียกใช้ (สำหรับทดสอบ)
-        // createFloatingMessage("สวัสดีปีใหม่ไทย!");
     </script>
 
 </body>
