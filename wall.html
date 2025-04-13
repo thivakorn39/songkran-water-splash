@@ -1,112 +1,128 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-  <meta charset="UTF-8">
-  <title>สงกรานต์ลอยๆ</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: #f0f8ff;
-      font-family: sans-serif;
-    }
+    <meta charset="UTF-8">
+    <title>สงกรานต์ลอยๆ</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #f0f8ff;
+            font-family: sans-serif;
+        }
 
-    .floating-message {
-      position: absolute;
-      background-image: url('./splash.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      color: #0044aa;
-      font-size: 1.2rem;
-      font-weight: bold;
-      padding: 50px 60px; /* เพิ่ม padding ให้ข้อความอยู่กลางภาพ */
-      white-space: nowrap;
-      pointer-events: none;
-      animation: float linear infinite;
-    }
+        .floating-message {
+            position: absolute;
+            background-image: url('./—Pngtree—songkran festival celebration squirrel battle_7417708.png');
+            background-size: cover;
+            /* จาก contain → cover เพื่อให้ใหญ่เต็ม div */
+            background-repeat: no-repeat;
+            background-position: center;
 
-    @keyframes float {
-      0% {
-        transform: translate(0px, 0px);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(var(--dx), var(--dy));
-        opacity: 0;
-      }
-    }
-  </style>
+            color: white;
+            /* เปลี่ยนจาก #0044aa → ขาว */
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding: 60px 80px;
+            white-space: nowrap;
+            pointer-events: none;
+
+            /* เพิ่มความคมชัด */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+
+            /* เพิ่มพื้นหลังข้อความแบบโปร่งใส */
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+
+            animation: float linear infinite;
+        }
+
+
+        @keyframes float {
+            0% {
+                transform: translate(0px, 0px);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--dx), var(--dy));
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getDatabase, ref, onChildAdded, remove, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, onChildAdded, remove, get } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBMH5oWEqrsPvIHfe6UVeszseV0-QaxtGw",
-    authDomain: "songkran-water-splash.firebaseapp.com",
-    projectId: "songkran-water-splash",
-    storageBucket: "songkran-water-splash.appspot.com",
-    messagingSenderId: "145856517287",
-    appId: "1:145856517287:web:63c638840573c3ca79b782"
-  };
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMH5oWEqrsPvIHfe6UVeszseV0-QaxtGw",
+            authDomain: "songkran-water-splash.firebaseapp.com",
+            projectId: "songkran-water-splash",
+            storageBucket: "songkran-water-splash.appspot.com",
+            messagingSenderId: "145856517287",
+            appId: "1:145856517287:web:63c638840573c3ca79b782"
+        };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-  const EXPIRY_MS = 3 * 60 * 60 * 1000; // 3 ชั่วโมง
+        const EXPIRY_MS = 3 * 60 * 60 * 1000; // 3 ชั่วโมง
 
-  onChildAdded(ref(db, "messages"), (data) => {
-    const msg = data.val();
-    const id = data.key;
+        onChildAdded(ref(db, "messages"), (data) => {
+            const msg = data.val();
+            const id = data.key;
 
-    if (Date.now() - msg.timestamp > EXPIRY_MS) {
-      remove(ref(db, "messages/" + id));
-      return;
-    }
+            if (Date.now() - msg.timestamp > EXPIRY_MS) {
+                remove(ref(db, "messages/" + id));
+                return;
+            }
 
-    const div = document.createElement("div");
-    div.className = "floating-message";
-    div.textContent = msg.text;
+            const div = document.createElement("div");
+            div.className = "floating-message";
+            div.textContent = msg.text;
 
-    // สุ่มตำแหน่งเริ่มต้น
-    const startX = Math.random() * window.innerWidth;
-    const startY = Math.random() * window.innerHeight;
-    div.style.left = `${startX}px`;
-    div.style.top = `${startY}px`;
+            // สุ่มตำแหน่งเริ่มต้น
+            const startX = Math.random() * window.innerWidth;
+            const startY = Math.random() * window.innerHeight;
+            div.style.left = `${startX}px`;
+            div.style.top = `${startY}px`;
 
-    // สุ่มทิศทางลอย
-    const dx = (Math.random() - 0.5) * 500; // ระยะ x
-    const dy = (Math.random() - 0.5) * 500; // ระยะ y
-    div.style.setProperty('--dx', `${dx}px`);
-    div.style.setProperty('--dy', `${dy}px`);
+            // สุ่มทิศทางลอย
+            const dx = (Math.random() - 0.5) * 500; // ระยะ x
+            const dy = (Math.random() - 0.5) * 500; // ระยะ y
+            div.style.setProperty('--dx', `${dx}px`);
+            div.style.setProperty('--dy', `${dy}px`);
 
-    // สุ่มระยะเวลา animation
-    const duration = 10 + Math.random() * 10; // 10-20 วินาที
-    div.style.animationDuration = `${duration}s`;
+            // สุ่มระยะเวลา animation
+            const duration = 10 + Math.random() * 10; // 10-20 วินาที
+            div.style.animationDuration = `${duration}s`;
 
-    document.body.appendChild(div);
+            document.body.appendChild(div);
 
-    // ลบข้อความหลังจบ animation
-    setTimeout(() => {
-      div.remove();
-    }, duration * 1000);
-  });
+            // ลบข้อความหลังจบ animation
+            setTimeout(() => {
+                div.remove();
+            }, duration * 1000);
+        });
 
-  // ลบข้อความหมดอายุทุก 1 นาที
-  setInterval(async () => {
-    const snapshot = await get(ref(db, "messages"));
-    const now = Date.now();
-    snapshot.forEach(child => {
-      const data = child.val();
-      if (now - data.timestamp > EXPIRY_MS) {
-        remove(ref(db, "messages/" + child.key));
-      }
-    });
-  }, 60 * 1000);
-</script>
+        // ลบข้อความหมดอายุทุก 1 นาที
+        setInterval(async () => {
+            const snapshot = await get(ref(db, "messages"));
+            const now = Date.now();
+            snapshot.forEach(child => {
+                const data = child.val();
+                if (now - data.timestamp > EXPIRY_MS) {
+                    remove(ref(db, "messages/" + child.key));
+                }
+            });
+        }, 60 * 1000);
+    </script>
 
 </body>
+
 </html>
